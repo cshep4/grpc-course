@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package hello.v1;
+
+option go_package = "github.com/cshep4/grpc-course/module1/proto";
+
+message Person {
+  string name = 1;
+}
