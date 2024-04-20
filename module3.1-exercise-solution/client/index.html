@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Service</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">File Upload Application</h1>
+
+    <div class="mb-3">
+        <label for="fileUpload" class="form-label">Upload File</label>
+        <input class="form-control" type="file" id="fileUpload">
+        <button class="btn btn-primary mt-2" onclick="uploadFile()">Upload</button>
+    </div>
+
+    <div>
+        <label for="fileDownload" class="form-label">Download File</label>
+        <input class="form-control" type="text" id="fileDownload" placeholder="Enter filename">
+        <button class="btn btn-primary mt-2" onclick="downloadFile()">Download</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
