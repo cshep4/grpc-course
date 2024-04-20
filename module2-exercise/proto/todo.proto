@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package todo;
+
+option go_package="github.com/cshep4/grpc-course/02-todo-service/proto";
+
+service TodoService {
+  rpc AddTask(AddTaskRequest) returns (AddTaskResponse);
+  rpc CompleteTask(CompleteTaskRequest) returns (CompleteTaskResponse);
+  rpc ListTasks(ListTasksRequest) returns (ListTasksResponse);
+}
+
+message AddTaskRequest {
+  string task = 1;
+}
+
+message AddTaskResponse {
+  string id = 1;
+}
+
+message CompleteTaskRequest {
+  string id = 1;
+}
+
+message CompleteTaskResponse {
+}
+
+message ListTasksRequest {
+}
+
+message ListTasksResponse {
+  repeated Task tasks = 1;
+}
+
+message Task {
+  string id = 1;
+  string task = 2;
+}
