@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package streaming;
+
+option go_package = "github.com/cshep4/grpc-course/module3/proto";
+
+import "google/protobuf/timestamp.proto";
+
+service StreamingService {
+  // StreamServerTime is an example of a server-streaming RPC.
+  // It will stream the current server time back to the client at specified intervals.
+  rpc StreamServerTime(StreamServerTimeRequest) returns (stream StreamServerTimeResponse);
+
+  // LogStream is an example of a client-streaming RPC.
+  // It allows a client to stream log entries to a server.
+  rpc LogStream(stream LogStreamRequest) returns (LogStreamResponse);
+
+  // Echo is an example of a bidirectional-streaming RPC.
+  // Where the client can send a stream of messages, which the server will echo back
+  // the received messages in a stream.
+  rpc Echo(stream EchoRequest) returns (stream EchoResponse);
+}
+
+// StreamServerTimeRequest specifies the interval between time updates
+message StreamServerTimeRequest {
+  int32 interval_seconds = 1;
+}
+
+// StreamServerTimeResponse returns the current server time
+message StreamServerTimeResponse {
+  google.protobuf.Timestamp current_time = 1;
+}
+
+// LogStreamRequest contains a log message structure
+message LogStreamRequest {
+  google.protobuf.Timestamp timestamp = 1;
+  LogLevel level = 2;
+  string message = 3;
+}
+
+// LogStreamResponse contains confirmation of the log entries received
+message LogStreamResponse {
+  int32 entries_logged = 1;
+}
+
+enum LogLevel {
+  LOG_LEVEL_UNSPECIFIED = 0;
+  LOG_LEVEL_DEBUG = 1;
+  LOG_LEVEL_INFO = 2;
+  LOG_LEVEL_WARNING = 3;
+  LOG_LEVEL_ERROR = 4;
+  LOG_LEVEL_FATAL = 5;
+}
+
+// EchoRequest contains the message that will be echoed back from the server.
+message EchoRequest {
+  string message = 1;
+}
+
+// EchoResponse contains the message that is being echoed back to the client.
+message EchoResponse {
+  string message = 1;
+}
