@@ -11,8 +11,9 @@ proto-gen:
 	protoc --go_out=. --go_opt=paths=source_relative \
 		--go-grpc_out=. --go-grpc_opt=paths=source_relative \
 		proto/streaming.proto
-	protoc -I=. proto/streaming.proto --js_out=import_style=commonjs:./client \
-       --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./client
+	protoc --es_out=. --es_opt=target=ts \
+		--connect-es_out=. --connect-es_opt=target=ts \
+		proto/streaming.proto
 
 
 run-server:

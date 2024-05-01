@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package config;
+
+option go_package = "github.com/cshep4/grpc-course/module6/proto";
+
+service ConfigService {
+  rpc GetServerName(GetServerNameRequest) returns (GetServerNameResponse);
+  rpc LongRunning(LongRunningRequest) returns (LongRunningResponse);
+  rpc Flaky(FlakyRequest) returns (FlakyResponse);
+}
+
+message GetServerNameRequest {}
+
+message GetServerNameResponse {
+  string name = 1;
+}
+
+message LongRunningRequest {}
+
+message LongRunningResponse {}
+
+message FlakyRequest {}
+
+message FlakyResponse {}
