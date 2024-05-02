@@ -60,11 +60,7 @@ func (m *middleware) UnaryAuthMiddleware(ctx context.Context, req any, info *grp
 
 func getTokenFromMetadata(ctx context.Context) (string, error) {
 	meta, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return "", errors.New("can't create request metadata from context")
-	}
-
-	if len(meta["authorization"]) != 1 {
+	if !ok || len(meta["authorization"]) != 1 {
 		return "", errors.New("token not found in metadata")
 	}
 

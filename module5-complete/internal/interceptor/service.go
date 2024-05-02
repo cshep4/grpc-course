@@ -32,8 +32,8 @@ func (s service) SayHello(ctx context.Context, request *proto.SayHelloRequest) (
 	start := time.Now()
 
 	meta, ok := metadata.FromIncomingContext(ctx)
-	if !ok && len(meta["x-request-id"]) == 0 {
-		return nil, status.Error(codes.FailedPrecondition, "missing x-request-id")
+	if !ok || len(meta["x-request-id"]) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "missing x-request-id")
 	}
 	requestID := meta["x-request-id"][0]
 
