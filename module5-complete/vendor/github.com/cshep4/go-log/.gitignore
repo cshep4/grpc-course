@@ -1,0 +1,6 @@
+.DS_Store
+.idea
+.vs
+.vscode
+vendor
+race.out

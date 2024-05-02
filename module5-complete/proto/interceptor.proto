@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package interceptor;
+
+option go_package = "github.com/cshep4/grpc-course/module5/proto";
+
+service InterceptorService {
+  rpc SayHello(SayHelloRequest) returns (SayHelloResponse);
+  rpc LongRunning(LongRunningRequest) returns (LongRunningResponse);
+  rpc Protected(ProtectedRequest) returns (ProtectedResponse);
+}
+
+message SayHelloRequest {
+  string name = 1;
+}
+
+message SayHelloResponse {
+  string message = 1;
+}
+
+message LongRunningRequest {}
+
+message LongRunningResponse {}
+
+message ProtectedRequest {}
+
+message ProtectedResponse {
+  string user_id = 1;
+}

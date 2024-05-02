@@ -1,0 +1,20 @@
+run:
+  build-tags:
+    - bdd
+
+linters-settings:
+  goimports:
+    # Separate internal packages from external
+    local-prefixes: github.com/cshep4/go-log
+
+linters:
+  # Enable extra linters besides the default ones
+  enable:
+    - goimports
+    - goconst
+    - govet
+    - stylecheck
+    - unconvert
+    - unparam
+    - misspell
+    - whitespace
