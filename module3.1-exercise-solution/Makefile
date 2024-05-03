@@ -15,12 +15,14 @@ proto-gen:
 		--connect-es_out=. --connect-es_opt=target=ts \
 		proto/streaming.proto
 
-
+.PHONY: run-server
 run-server:
 	go run cmd/server/main.go
 
+.PHONY: run-client
 run-client:
 	go run cmd/client/main.go
 
+.PHONY: run-download-client
 run-download-client:
 	go run cmd/download-client/main.go

@@ -5,10 +5,10 @@ import (
 	"github.com/cshep4/grpc-course/module5/internal/auth"
 	"github.com/cshep4/grpc-course/module5/proto"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"os"
-	"strings"
 )
 
 func main() {
@@ -45,6 +45,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Println("Successful response")
 }
 
 type jwtCredentials struct {
@@ -52,7 +54,8 @@ type jwtCredentials struct {
 }
 
 func (c *jwtCredentials) GetRequestMetadata(ctx context.Context, uri ...string) (map[string]string, error) {
-	if len(uri) == 0 || !strings.Contains(uri[0], proto.InterceptorService_Protected_FullMethodName) {
+	info, ok := credentials.RequestInfoFromContext(ctx)
+	if !ok || info.Method != proto.InterceptorService_Protected_FullMethodName {
 		return nil, nil
 	}
 

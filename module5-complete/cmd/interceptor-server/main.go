@@ -37,10 +37,7 @@ func main() {
 		),
 	)
 
-	interceptorService, err := interceptor.NewService("")
-	if err != nil {
-		log.Fatal(err)
-	}
+	interceptorService := interceptor.Service{}
 
 	proto.RegisterInterceptorServiceServer(grpcServer, interceptorService)
 	reflection.Register(grpcServer)

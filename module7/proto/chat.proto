@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package chat;
+
+option go_package = "github.com/cshep4/grpc-course/module7/proto";
+
+import "google/protobuf/timestamp.proto";
+
+service ChatService {
+  rpc Subscribe(SubscribeRequest) returns (stream SubscribeResponse);
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+}
+
+message SubscribeRequest {
+  User user = 1;
+  string chat_id = 2;
+}
+
+message SubscribeResponse {
+  Message message = 1;
+}
+
+message SendMessageRequest {
+  string message = 1;
+  string chat_id = 2;
+  User user = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+message SendMessageResponse {
+  string id = 1;
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+}
+
+message Message {
+  string id = 1;
+  string message = 2;
+  User user = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}

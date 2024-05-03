@@ -12,11 +12,14 @@ proto-gen:
 		--go-grpc_out=. --go-grpc_opt=paths=source_relative \
 		proto/streaming.proto
 
+.PHONY: run-server
 run-server:
 	go run cmd/server/main.go
 
+.PHONY: run-client
 run-client:
 	go run cmd/client/main.go
 
+.PHONY: run-download-client
 run-download-client:
 	go run cmd/download-client/main.go

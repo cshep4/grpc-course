@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package interceptor;
+
+option go_package = "github.com/cshep4/grpc-course/module5-exercise/proto";
+
+service TokenService {
+    rpc Validate(ValidateRequest) returns (ValidateResponse);
+}
+
+message ValidateRequest {
+}
+
+message ValidateResponse {
+    map<string, string> claims = 1;
+}

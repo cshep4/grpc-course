@@ -2,7 +2,6 @@ package interceptor
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/cshep4/grpc-course/module5/proto"
 	"google.golang.org/grpc"
@@ -13,22 +12,11 @@ import (
 	"time"
 )
 
-type service struct {
+type Service struct {
 	proto.UnimplementedInterceptorServiceServer
-	name string
 }
 
-func NewService(name string) (*service, error) {
-	if name == "" {
-		return nil, errors.New("name cannot be empty")
-	}
-
-	return &service{
-		name: name,
-	}, nil
-}
-
-func (s service) SayHello(ctx context.Context, request *proto.SayHelloRequest) (*proto.SayHelloResponse, error) {
+func (s Service) SayHello(ctx context.Context, request *proto.SayHelloRequest) (*proto.SayHelloResponse, error) {
 	start := time.Now()
 
 	meta, ok := metadata.FromIncomingContext(ctx)
@@ -63,7 +51,7 @@ func (s service) SayHello(ctx context.Context, request *proto.SayHelloRequest) (
 	}, nil
 }
 
-func (s service) LongRunning(ctx context.Context, request *proto.LongRunningRequest) (*proto.LongRunningResponse, error) {
+func (s Service) LongRunning(ctx context.Context, request *proto.LongRunningRequest) (*proto.LongRunningResponse, error) {
 	select {
 	case <-time.Tick(time.Second * 5):
 		log.Println("finish request")
@@ -74,7 +62,7 @@ func (s service) LongRunning(ctx context.Context, request *proto.LongRunningRequ
 	return &proto.LongRunningResponse{}, nil
 }
 
-func (s service) Protected(ctx context.Context, request *proto.ProtectedRequest) (*proto.ProtectedResponse, error) {
+func (s Service) Protected(ctx context.Context, request *proto.ProtectedRequest) (*proto.ProtectedResponse, error) {
 	userID, ok := ctx.Value(userIDKey).(string)
 	if !ok {
 		return nil, status.Error(codes.FailedPrecondition, "user id missing")

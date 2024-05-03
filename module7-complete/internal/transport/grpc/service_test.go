@@ -356,8 +356,8 @@ func TestService_Subscribe(t *testing.T) {
 		wg := sync.WaitGroup{}
 
 		// call subscribe RPC in a separate goroutine as it is blocking
+		wg.Add(1)
 		go func() {
-			wg.Add(1)
 			defer wg.Done()
 
 			err = grpcService.Subscribe(req, stream)
@@ -437,8 +437,8 @@ func TestService_Subscribe(t *testing.T) {
 		wg := sync.WaitGroup{}
 
 		// call subscribe RPC in a separate goroutine as it is blocking
+		wg.Add(1)
 		go func() {
-			wg.Add(1)
 			defer wg.Done()
 
 			err = grpcService.Subscribe(req, stream)

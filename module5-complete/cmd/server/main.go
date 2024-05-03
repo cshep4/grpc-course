@@ -31,10 +31,7 @@ func main() {
 		grpc.UnaryInterceptor(middleware.UnaryAuthMiddleware),
 	)
 
-	interceptorService, err := interceptor.NewService("dfssd")
-	if err != nil {
-		log.Fatal(err)
-	}
+	interceptorService := interceptor.Service{}
 
 	proto.RegisterInterceptorServiceServer(grpcServer, interceptorService)
 	reflection.Register(grpcServer)
