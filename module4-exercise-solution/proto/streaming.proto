@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package streaming;
+
+option go_package = "github.com/cshep4/grpc-course/module4-exercise/proto";
+
+// FileUploadService is a simple file-sharing service to demonstrate different types of streaming.
+service FileUploadService {
+  // DownloadFile is a server-streaming RPC method for downloading a file.
+  // It takes a filename in the request and streams back the file content in chunks.
+  rpc DownloadFile(DownloadFileRequest) returns (stream DownloadFileResponse);
+
+  // UploadFile is a client-streaming RPC method for uploading a file.
+  // It accepts a stream of bytes, which contains chunks of the file content, and
+  // returns a generated file name upon completion.
+  rpc UploadFile(stream UploadFileRequest) returns (UploadFileResponse);
+}
+
+// DownloadFileRequest is the request message for downloading a file.
+// It contains the name of the file to be downloaded from the server.
+message DownloadFileRequest {
+  // name is the name of the file to download.
+  string name = 1;
+}
+
+// DownloadFileResponse is the response message for downloading a file.
+// It contains a chunk of the file content.
+message DownloadFileResponse {
+  // content is a chunk of the file content in bytes.
+  bytes content = 1;
+}
+
+// UploadFileRequest is the request message for uploading a file.
+// It contains a chunk of the file content.
+message UploadFileRequest {
+  // content is a chunk of the file content in bytes.
+  bytes content = 1;
+}
+
+// UploadFileResponse is the response message after a file upload is complete.
+// It contains an name that uniquely identifies the uploaded file.
+message UploadFileResponse {
+  // name is the name for the uploaded file.
+  string name = 1;
+}

@@ -31,7 +31,7 @@ func (s Service) DownloadFile(req *proto.DownloadFileRequest, stream proto.FileU
 	}
 	defer file.Close()
 
-	bufferSize := 5 * 1024 // send in 5KiB chunks
+	const bufferSize = 5 * 1024 // send in 5KiB chunks
 	buff := make([]byte, bufferSize)
 	for {
 		// read bytes

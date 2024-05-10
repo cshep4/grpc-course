@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
+	"log"
+	"time"
+
 	"github.com/cshep4/grpc-course/module5/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"log"
-	"time"
 )
 
 func main() {
@@ -45,7 +46,7 @@ func main() {
 
 	client := proto.NewInterceptorServiceClient(conn)
 
-	_, err = client.Protected(ctx, &proto.ProtectedRequest{})
+	_, err = client.SayHello(ctx, &proto.SayHelloRequest{})
 	if err != nil {
 		log.Fatal(err)
 	}

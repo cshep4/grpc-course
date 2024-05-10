@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"log"
 	"net/http"
 
@@ -33,7 +34,41 @@ func main() {
 // The file content will be buffered until the server stream is complete, then the content will be returned to the user.
 func downloadHandler(client proto.FileUploadServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// your implementation goes here ...
-		panic("implement me")
+		ctx := r.Context()
+
+		// make request to server and initialise stream
+		stream, err := client.DownloadFile(ctx, &proto.DownloadFileRequest{
+			Name: "gopher.png",
+		})
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// create a slice to store file contents
+		var fileContent []byte
+
+		// read chunks from server and store in slice
+		for {
+			res, err := stream.Recv()
+			if err != nil {
+				if err == io.EOF {
+					break
+				}
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			log.Println("chunk received from server")
+
+			fileContent = append(fileContent, res.GetContent()...)
+		}
+
+		log.Println("server stream done")
+
+		// write our slice of bytes back to the client
+		if _, err := w.Write(fileContent); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 }
