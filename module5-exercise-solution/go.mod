@@ -4,6 +4,7 @@ go 1.22.1
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.2.1
+	golang.org/x/sync v0.6.0
 	google.golang.org/grpc v1.63.2
 	google.golang.org/protobuf v1.33.0
 )

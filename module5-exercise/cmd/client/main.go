@@ -15,7 +15,7 @@ func main() {
 		token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjQxMTMwMjM1NTAsImlhdCI6MTcxNDczNTk1MCwibmFtZSI6IkNocmlzIiwicm9sZSI6ImFkbWluIiwic3ViIjoidXNlci1pZC0xMjM0In0.2KcYUbgJCGDAtzKnc5z45DsPaadhERyaasuckQ6S5io"
 	)
 
-	conn, err := grpc.DialContext(ctx, "localhost:50051",
+	conn, err := grpc.NewClient("localhost:50051",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithBlock(),
 	)
