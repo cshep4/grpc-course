@@ -1,0 +1,33 @@
+# Benefits
+# 	1.	Host-based Routing: Ingress allows you to route traffic based on the request hostname. This is particularly useful if you have multiple services or applications under the same IP address but different subdomains or domains.
+#	2.	Path-based Routing: You can route traffic to different backend services based on the URL path. This is more relevant for HTTP/HTTPS services but can be configured for gRPC as well if combined with HTTP/2.
+#	3.	TLS/SSL Termination: Ingress controllers can manage TLS termination, which simplifies your service deployments by offloading the encryption layer from your application to the Ingress controller.
+#	4.	Centralized Management: Managing access through an Ingress provides a centralized point for handling access to multiple services, which can simplify both configuration and monitoring.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app: test-grpc
+  name: test-grpc
+  namespace: test-grpc
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - grpcgo.io
+        - "*.grpcgo.io"
+      secretName: test-grpc-cert-secret
+  rules:
+  - host: "ing.grpcgo.io"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: test-grpc
+            port:
+              number: 50051
+

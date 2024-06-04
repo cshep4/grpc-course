@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app: test-grpc
+    kubernetes.io/metadata.name: test-grpc
+  name: test-grpc
