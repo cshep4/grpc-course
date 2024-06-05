@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
-	"github.com/cshep4/grpc-course/module10/proto/grpc"
+	"github.com/cshep4/grpc-course/module10/proto"
 )
 
 func main() {

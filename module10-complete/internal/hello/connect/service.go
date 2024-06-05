@@ -9,9 +9,12 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/cshep4/grpc-course/module10/proto"
+	"github.com/cshep4/grpc-course/module10/proto/protoconnect"
 )
 
-type Service struct{}
+type Service struct {
+	protoconnect.UnimplementedHelloServiceHandler
+}
 
 func (s Service) SayHello(ctx context.Context, c *connect.Request[proto.SayHelloRequest]) (*connect.Response[proto.SayHelloResponse], error) {
 	if c.Msg.GetName() == "" {

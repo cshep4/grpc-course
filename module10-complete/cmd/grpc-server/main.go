@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 
 	hello "github.com/cshep4/grpc-course/module10/internal/hello/grpc"
-	"github.com/cshep4/grpc-course/module10/proto/grpc"
+	"github.com/cshep4/grpc-course/module10/proto"
 )
 
 func main() {

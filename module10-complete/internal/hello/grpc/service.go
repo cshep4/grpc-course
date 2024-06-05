@@ -3,7 +3,7 @@ package grpc
 import (
 	"context"
 	"fmt"
-	"github.com/cshep4/grpc-course/module10/proto/grpc"
+	"github.com/cshep4/grpc-course/module10/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

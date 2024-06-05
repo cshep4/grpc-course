@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"crypto/tls"
-	"golang.org/x/net/http2"
 	"log"
 	"net"
 	"net/http"
 
 	"connectrpc.com/connect"
+	"golang.org/x/net/http2"
 	"google.golang.org/grpc/status"
 
 	"github.com/cshep4/grpc-course/module10/proto"
@@ -27,7 +27,7 @@ func main() {
 				},
 			},
 		},
-		"http://localhost:50051",
+		"https://localhost:50052",
 		connect.WithGRPC(),
 	)
 	res, err := client.SayHello(
