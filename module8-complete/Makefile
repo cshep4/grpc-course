@@ -2,7 +2,7 @@
 .PHONY: create-gke-cluster
 create-gke-cluster:
 	export CLUSTER=test-grpc-cluster
-	gcloud container clusters create $CLUSTER --preemptible --num-nodes=1
+	gcloud container clusters create $CLUSTER --preemptible --num-nodes=2
 	gcloud components install gke-gcloud-auth-plugin
 	export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 	gcloud container clusters get-credentials $CLUSTER

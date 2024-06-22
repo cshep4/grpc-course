@@ -17,6 +17,17 @@ func main() {
 		"timeout": "1s"
 	}]
 }`
+	//config := config2.Config{
+	//	MethodConfig: []config2.MethodConfig{{
+	//		Name: []config2.NameConfig{{
+	//			Service: "config.ConfigService",
+	//			Method:  "LongRunning",
+	//		}},
+	//		RetryPolicy: nil,
+	//		Timeout:     "10s",
+	//	}},
+	//}
+	//cs, _ := json.Marshal(config)
 
 	conn, err := grpc.DialContext(ctx, "localhost:50051",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),

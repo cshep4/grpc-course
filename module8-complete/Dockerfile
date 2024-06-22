@@ -4,7 +4,7 @@ WORKDIR /build
 
 COPY . .
 
-RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -gcflags='-N -l' -ldflags "-s -w" -o /hello-server ./cmd/server
+RUN GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o /hello-server ./cmd/server
 
 FROM alpine as release
 

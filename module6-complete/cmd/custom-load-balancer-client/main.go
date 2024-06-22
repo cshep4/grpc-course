@@ -15,15 +15,10 @@ import (
 	"time"
 )
 
-var serverAddresses = []string{"localhost:50051", "localhost:50052", "localhost:50053"}
-
 func main() {
 	ctx := context.Background()
 
-	builder, err := resolve.NewBuilder(serverAddresses)
-	if err != nil {
-		log.Fatalf("failed to create resolver builder: %v", err)
-	}
+	builder := &resolve.Builder{}
 	resolver.Register(builder)
 
 	groups := map[string]string{

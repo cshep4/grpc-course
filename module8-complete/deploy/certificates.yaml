@@ -19,7 +19,7 @@ metadata:
   name: test-grpc-cluster-issuer
   namespace: test-grpc
 spec:
-  acme:
+  acme: # protocol to verify that you control a given domain name and to issue you a certificate
     email: chris@grpcgo.io
     privateKeySecretRef:
       name: test-grpc-private-key
