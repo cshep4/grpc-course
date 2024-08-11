@@ -5,24 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"sync"
-	"time"
-)
-
-type (
-	Message struct {
-		ID        string
-		Message   string
-		User      User
-		Timestamp time.Time
-	}
-	User struct {
-		ID   string
-		Name string
-	}
-	Connection struct {
-		UserID       string
-		Subscription chan Message
-	}
 )
 
 type (
@@ -40,20 +22,7 @@ type (
 		connections map[string]map[string]Connection
 		lock        sync.Mutex
 	}
-
-	Option func(*service) error
 )
-
-func WithIDGenerator(generator IDGenerator) Option {
-	return func(s *service) error {
-		if generator == nil {
-			return errors.New("id generator cannot be nil")
-		}
-		s.idGenerator = generator
-
-		return nil
-	}
-}
 
 func NewService(store Store, opts ...Option) (*service, error) {
 	if store == nil {

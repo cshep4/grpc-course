@@ -35,6 +35,44 @@ func NewService(chatService ChatService) (*service, error) {
 	}, nil
 }
 
+func (s service) SendMessage(ctx context.Context, req *proto.SendMessageRequest) (*proto.SendMessageResponse, error) {
+	switch {
+	case req.GetChatId() == "":
+		return nil, status.Error(codes.InvalidArgument, "chat id cannot be empty")
+	case req.GetUser().GetId() == "":
+		return nil, status.Error(codes.InvalidArgument, "user id cannot be empty")
+	case req.GetUser().GetName() == "":
+		return nil, status.Error(codes.InvalidArgument, "user name cannot be empty")
+	case req.GetMessage() == "":
+		return nil, status.Error(codes.InvalidArgument, "message cannot be empty")
+	case req.GetTimestamp().AsTime().IsZero():
+		return nil, status.Error(codes.InvalidArgument, "timestamp cannot be empty")
+	}
+
+	msg := chat.Message{
+		Message: req.Message,
+		User: chat.User{
+			ID:   req.User.Id,
+			Name: req.User.Name,
+		},
+		Timestamp: req.Timestamp.AsTime(),
+	}
+
+	id, err := s.chatService.SendMessage(ctx, req.ChatId, msg)
+	if err != nil {
+		slog.Error("failed to send message",
+			slog.String("user_id", req.User.Id),
+			slog.String("chat_id", req.ChatId),
+			slog.String("error", err.Error()),
+		)
+		return nil, status.Error(codes.Internal, "failed to send message")
+	}
+
+	return &proto.SendMessageResponse{
+		Id: id,
+	}, nil
+}
+
 func (s service) Subscribe(req *proto.SubscribeRequest, stream proto.ChatService_SubscribeServer) error {
 	switch {
 	case req.GetChatId() == "":
@@ -111,42 +149,4 @@ func (s service) Subscribe(req *proto.SubscribeRequest, stream proto.ChatService
 			}
 		}
 	}
-}
-
-func (s service) SendMessage(ctx context.Context, req *proto.SendMessageRequest) (*proto.SendMessageResponse, error) {
-	switch {
-	case req.GetChatId() == "":
-		return nil, status.Error(codes.InvalidArgument, "chat id cannot be empty")
-	case req.GetUser().GetId() == "":
-		return nil, status.Error(codes.InvalidArgument, "user id cannot be empty")
-	case req.GetUser().GetName() == "":
-		return nil, status.Error(codes.InvalidArgument, "user name cannot be empty")
-	case req.GetMessage() == "":
-		return nil, status.Error(codes.InvalidArgument, "message cannot be empty")
-	case req.GetTimestamp().AsTime().IsZero():
-		return nil, status.Error(codes.InvalidArgument, "timestamp cannot be empty")
-	}
-
-	msg := chat.Message{
-		Message: req.Message,
-		User: chat.User{
-			ID:   req.User.Id,
-			Name: req.User.Name,
-		},
-		Timestamp: req.Timestamp.AsTime(),
-	}
-
-	id, err := s.chatService.SendMessage(ctx, req.ChatId, msg)
-	if err != nil {
-		slog.Error("failed to send message",
-			slog.String("user_id", req.User.Id),
-			slog.String("chat_id", req.ChatId),
-			slog.String("error", err.Error()),
-		)
-		return nil, status.Error(codes.Internal, "failed to send message")
-	}
-
-	return &proto.SendMessageResponse{
-		Id: id,
-	}, nil
 }
