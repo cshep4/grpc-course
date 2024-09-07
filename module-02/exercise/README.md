@@ -29,7 +29,7 @@ code and make gRPC calls.
 - Server should listen on port 50051
 - Client should initialise gRPC connection, add tasks to todo list, list tasks and remove tasks and log results
 
-## Commands
+## Useful Commands
 
 A makefile has been provided with useful commands.
 
