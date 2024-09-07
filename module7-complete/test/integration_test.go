@@ -89,9 +89,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	require.NoError(s.T(), err)
 
 	// initialise grpc client connection & create client
-	conn, err := grpc.Dial(endpoint,
+	conn, err := grpc.NewClient(endpoint,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
 	)
 	s.client = proto.NewChatServiceClient(conn)
 

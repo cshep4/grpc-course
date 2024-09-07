@@ -32,3 +32,12 @@ spec:
               key: api-token
               name: cloudflare-api-token-secret
             email: chris_shepherd2@hotmail.com
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api-token-secret
+  namespace: cert-manager
+type: Opaque
+stringData:
+  api-token: <api-token-goes-here>

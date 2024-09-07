@@ -4,14 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/cshep4/grpc-course/module3/internal/streaming"
-	"github.com/cshep4/grpc-course/module3/proto"
-	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc"
 	"log/slog"
 	"net"
 	"os"
 	"os/signal"
+
+	"github.com/cshep4/grpc-course/module3/internal/streaming"
+	"github.com/cshep4/grpc-course/module3/proto"
+	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc"
 )
 
 func main() {

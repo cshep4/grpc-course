@@ -6,7 +6,6 @@ option go_package = "github.com/cshep4/grpc-course/module5/proto";
 
 service InterceptorService {
   rpc SayHello(SayHelloRequest) returns (SayHelloResponse);
-  rpc LongRunning(LongRunningRequest) returns (LongRunningResponse);
 }
 
 message SayHelloRequest {
@@ -15,12 +14,4 @@ message SayHelloRequest {
 
 message SayHelloResponse {
   string message = 1;
-}
-
-message LongRunningRequest {
-
-}
-
-message LongRunningResponse {
-
 }

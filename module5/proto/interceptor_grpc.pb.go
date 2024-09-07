@@ -19,8 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	InterceptorService_SayHello_FullMethodName    = "/interceptor.InterceptorService/SayHello"
-	InterceptorService_LongRunning_FullMethodName = "/interceptor.InterceptorService/LongRunning"
+	InterceptorService_SayHello_FullMethodName = "/interceptor.InterceptorService/SayHello"
 )
 
 // InterceptorServiceClient is the client API for InterceptorService service.
@@ -28,7 +27,6 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type InterceptorServiceClient interface {
 	SayHello(ctx context.Context, in *SayHelloRequest, opts ...grpc.CallOption) (*SayHelloResponse, error)
-	LongRunning(ctx context.Context, in *LongRunningRequest, opts ...grpc.CallOption) (*LongRunningResponse, error)
 }
 
 type interceptorServiceClient struct {
@@ -48,21 +46,11 @@ func (c *interceptorServiceClient) SayHello(ctx context.Context, in *SayHelloReq
 	return out, nil
 }
 
-func (c *interceptorServiceClient) LongRunning(ctx context.Context, in *LongRunningRequest, opts ...grpc.CallOption) (*LongRunningResponse, error) {
-	out := new(LongRunningResponse)
-	err := c.cc.Invoke(ctx, InterceptorService_LongRunning_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // InterceptorServiceServer is the server API for InterceptorService service.
 // All implementations must embed UnimplementedInterceptorServiceServer
 // for forward compatibility
 type InterceptorServiceServer interface {
 	SayHello(context.Context, *SayHelloRequest) (*SayHelloResponse, error)
-	LongRunning(context.Context, *LongRunningRequest) (*LongRunningResponse, error)
 	mustEmbedUnimplementedInterceptorServiceServer()
 }
 
@@ -72,9 +60,6 @@ type UnimplementedInterceptorServiceServer struct {
 
 func (UnimplementedInterceptorServiceServer) SayHello(context.Context, *SayHelloRequest) (*SayHelloResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
-}
-func (UnimplementedInterceptorServiceServer) LongRunning(context.Context, *LongRunningRequest) (*LongRunningResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LongRunning not implemented")
 }
 func (UnimplementedInterceptorServiceServer) mustEmbedUnimplementedInterceptorServiceServer() {}
 
@@ -107,24 +92,6 @@ func _InterceptorService_SayHello_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _InterceptorService_LongRunning_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LongRunningRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(InterceptorServiceServer).LongRunning(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: InterceptorService_LongRunning_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(InterceptorServiceServer).LongRunning(ctx, req.(*LongRunningRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // InterceptorService_ServiceDesc is the grpc.ServiceDesc for InterceptorService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -135,10 +102,6 @@ var InterceptorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SayHello",
 			Handler:    _InterceptorService_SayHello_Handler,
-		},
-		{
-			MethodName: "LongRunning",
-			Handler:    _InterceptorService_LongRunning_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package config;
+
+option go_package = "github.com/cshep4/grpc-course/module6/proto";
+
+service ConfigService {
+  rpc LongRunning(LongRunningRequest) returns (LongRunningResponse);
+}
+
+message LongRunningRequest {}
+
+message LongRunningResponse {}

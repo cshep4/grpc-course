@@ -3,16 +3,16 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"errors"
 	"log"
 	"net"
 	"net/http"
 
 	"connectrpc.com/connect"
-	"golang.org/x/net/http2"
-	"google.golang.org/grpc/status"
-
+	"github.com/bufbuild/protovalidate-go"
 	"github.com/cshep4/grpc-course/module9/proto"
 	"github.com/cshep4/grpc-course/module9/proto/protoconnect"
+	"golang.org/x/net/http2"
 )
 
 func main() {
@@ -22,26 +22,37 @@ func main() {
 		&http.Client{
 			Transport: &http2.Transport{
 				AllowHTTP: true,
-				DialTLSContext: func(_ context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {
+				DialTLSContext: func(ctx context.Context, network, addr string, cfg *tls.Config) (net.Conn, error) {
 					return net.Dial(network, addr)
 				},
 			},
 		},
-		"https://localhost:50052",
+		"http://localhost:50052",
 		connect.WithGRPC(),
 	)
-	res, err := client.SayHello(
-		ctx,
-		connect.NewRequest(&proto.SayHelloRequest{Name: "Chris"}),
-	)
+
+	req := &proto.SayHelloRequest{
+		Name: "Chris",
+	}
+
+	validator, err := protovalidate.New()
 	if err != nil {
-		if err != nil {
-			status, ok := status.FromError(err)
-			if ok {
-				log.Fatalf("status code: %s, error: %s", status.Code().String(), status.Message())
-			}
-			log.Fatal(err)
+		log.Fatal(err)
+	}
+
+	if err := validator.Validate(req); err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("request valid, making RPC call")
+
+	res, err := client.SayHello(ctx, connect.NewRequest(req))
+	if err != nil {
+		var connectErr *connect.Error
+		if errors.As(err, &connectErr) {
+			log.Fatalf("error code: %s, message: %s", connectErr.Code().String(), connectErr.Message())
 		}
+		log.Fatal(err)
 	}
 
 	log.Printf("response received: %s", res.Msg.GetMessage())

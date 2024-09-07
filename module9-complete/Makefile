@@ -22,4 +22,4 @@ run-grpc-client:
 	go run cmd/grpc-client/main.go
 
 create-client:
-	npx create-next-app grpc-web-client
+	npx create-next-app client

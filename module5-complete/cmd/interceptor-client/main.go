@@ -13,9 +13,8 @@ import (
 func main() {
 	ctx := context.Background()
 
-	conn, err := grpc.DialContext(ctx, "localhost:50051",
+	conn, err := grpc.NewClient("localhost:50051",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
 		grpc.WithChainUnaryInterceptor(
 			func(ctx context.Context, method string, req, reply any, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 				start := time.Now()
@@ -46,8 +45,12 @@ func main() {
 
 	client := proto.NewInterceptorServiceClient(conn)
 
-	_, err = client.SayHello(ctx, &proto.SayHelloRequest{})
+	res, err := client.SayHello(ctx, &proto.SayHelloRequest{
+		Name: "Chris",
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Printf("response recieved on client: %s", res.GetMessage())
 }

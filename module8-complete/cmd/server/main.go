@@ -5,15 +5,16 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"log/slog"
+	"net"
+	"os"
+	"os/signal"
+
 	"github.com/cshep4/grpc-course/module8/internal/hello"
 	"github.com/cshep4/grpc-course/module8/proto"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"log/slog"
-	"net"
-	"os"
-	"os/signal"
 )
 
 func main() {
@@ -35,11 +36,13 @@ func run(ctx context.Context) error {
 	key := os.Getenv("TLS_KEY_PATH")
 
 	if cert != "" && key != "" {
+		// load our certs
 		tlsCredentials, err := loadTLSCredentials(cert, key)
 		if err != nil {
-			return fmt.Errorf("failed to load TLS credentials: %w", err)
+			return fmt.Errorf("failed to load TLS certs: %w", err)
 		}
 
+		// append to the server opts
 		serverOpts = append(serverOpts, grpc.Creds(tlsCredentials))
 	}
 

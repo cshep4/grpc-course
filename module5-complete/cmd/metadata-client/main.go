@@ -2,19 +2,19 @@ package main
 
 import (
 	"context"
+	"log"
+
 	"github.com/cshep4/grpc-course/module5/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
-	"log"
 )
 
 func main() {
 	ctx := context.Background()
 
-	conn, err := grpc.DialContext(ctx, "localhost:50051",
+	conn, err := grpc.NewClient("localhost:50051",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
 	)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
@@ -31,17 +31,19 @@ func main() {
 		respTrailers = metadata.New(map[string]string{})
 	)
 
-	res, err := client.SayHello(ctx, &proto.SayHelloRequest{Name: "Chris"},
-		grpc.MaxCallSendMsgSize(31),
-		grpc.MaxCallRecvMsgSize(14),
+	res, err := client.SayHello(ctx, &proto.SayHelloRequest{
+		Name: "Chris",
+	},
 		grpc.Header(&respHeaders),
 		grpc.Trailer(&respTrailers),
+		grpc.MaxCallRecvMsgSize(14),
+		grpc.MaxCallSendMsgSize(10),
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Printf("Response received: %s", res.Message)
+	log.Printf("Response received on client: %s", res.Message)
 	log.Printf("headers: %s", respHeaders)
 	log.Printf("trailers: %s", respTrailers)
 }

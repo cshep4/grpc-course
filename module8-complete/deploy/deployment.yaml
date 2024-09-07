@@ -6,7 +6,7 @@ metadata:
   name: test-grpc
   namespace: test-grpc
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: test-grpc
@@ -16,9 +16,9 @@ spec:
         app: test-grpc
     spec:
       containers:
-        - image: ghcr.io/cshep4/grpc-course/test-grpc:latest
+        - name: test-grpc
+          image: ghcr.io/cshep4/grpc-course/hello-server:v1.0.1
           imagePullPolicy: IfNotPresent
-          name: test-grpc
           ports:
             - containerPort: 50051
               name: grpc
@@ -31,50 +31,3 @@ spec:
               memory: 128Mi
       imagePullSecrets:
         - name: github-packages-secret
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: test-grpc-with-tls
-  name: test-grpc-with-tls
-  namespace: test-grpc
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: test-grpc-with-tls
-  template:
-    metadata:
-      labels:
-        app: test-grpc-with-tls
-    spec:
-      containers:
-        - image: ghcr.io/cshep4/grpc-course/test-grpc:latest
-          imagePullPolicy: IfNotPresent
-          name: test-grpc-with-tls
-          env:
-            - name: "TLS_CERT_PATH"
-              value: "certs/tls.crt"
-            - name: "TLS_KEY_PATH"
-              value: "certs/tls.key"
-          ports:
-            - containerPort: 50051
-              name: grpc
-          resources:
-            limits:
-              cpu: 100m
-              memory: 128Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
-          volumeMounts:
-            - mountPath: /certs
-              name: certs
-      imagePullSecrets:
-        - name: github-packages-secret
-      volumes:
-        - name: certs
-          secret:
-            defaultMode: 256
-            secretName: test-grpc-cert-secret

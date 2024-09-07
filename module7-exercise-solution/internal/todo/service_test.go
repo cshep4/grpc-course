@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"testing"
+
 	store_mock "github.com/cshep4/grpc-course/07-todo-service/internal/mocks/store"
 	todostore "github.com/cshep4/grpc-course/07-todo-service/internal/store"
 	"github.com/cshep4/grpc-course/07-todo-service/internal/todo"
@@ -13,7 +15,6 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"testing"
 )
 
 func TestNewService(t *testing.T) {
@@ -52,7 +53,7 @@ func TestService_AddTask(t *testing.T) {
 		assert.Equal(t, "task cannot be empty", statusErr.Message())
 	})
 
-	t.Run("returns INTERNAL status code when an error is returned from store", func(t *testing.T) {
+	t.Run("returns INTERNAL status code when an error is returned from the store", func(t *testing.T) {
 		const task = "wake up"
 		var (
 			ctrl, ctx = gomock.WithContext(context.Background(), t)
@@ -92,6 +93,7 @@ func TestService_AddTask(t *testing.T) {
 
 		res, err := service.AddTask(ctx, &proto.AddTaskRequest{Task: task})
 		require.NoError(t, err)
+		require.NotEmpty(t, res)
 
 		assert.Equal(t, taskID, res.GetId())
 	})
@@ -120,7 +122,7 @@ func TestService_CompleteTask(t *testing.T) {
 		assert.Equal(t, "task not found", statusErr.Message())
 	})
 
-	t.Run("returns INTERNAL status code when an error is returned from store", func(t *testing.T) {
+	t.Run("returns INTERNAL status code when an error is returned from the store", func(t *testing.T) {
 		const taskID = "some task id"
 		var (
 			ctrl, ctx = gomock.WithContext(context.Background(), t)
@@ -144,7 +146,7 @@ func TestService_CompleteTask(t *testing.T) {
 		assert.Equal(t, fmt.Sprintf("failed to complete task: %v", testErr), statusErr.Message())
 	})
 
-	t.Run("returns task ID when task is completed successfully", func(t *testing.T) {
+	t.Run("returns successful response when a task is completed", func(t *testing.T) {
 		const taskID = "some task id"
 		var (
 			ctrl, ctx = gomock.WithContext(context.Background(), t)
@@ -186,7 +188,7 @@ func TestService_ListTasks(t *testing.T) {
 		assert.Equal(t, fmt.Sprintf("failed to list tasks: %v", testErr), statusErr.Message())
 	})
 
-	t.Run("returns task ID when task is completed successfully", func(t *testing.T) {
+	t.Run("returns a list of tasks retrieved from store", func(t *testing.T) {
 		const (
 			taskID1 = "some task id 1"
 			taskID2 = "some task id 2"
@@ -213,7 +215,7 @@ func TestService_ListTasks(t *testing.T) {
 
 		res, err := service.ListTasks(ctx, &proto.ListTasksRequest{})
 		require.NoError(t, err)
-		require.Len(t, res.Tasks, 3)
+		require.Len(t, res.GetTasks(), 3)
 
 		assert.Equal(t, taskID1, res.Tasks[0].Id)
 		assert.Equal(t, task1, res.Tasks[0].Task)

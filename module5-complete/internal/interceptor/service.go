@@ -3,13 +3,14 @@ package interceptor
 import (
 	"context"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/cshep4/grpc-course/module5/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"log"
-	"time"
 )
 
 type Service struct {

@@ -2,16 +2,18 @@ package main
 
 import (
 	"context"
+	"io"
+	"log"
+
 	"github.com/cshep4/grpc-course/module3/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"io"
-	"log"
 )
 
 func main() {
 	ctx := context.Background()
 
+	// first initialise grpc connection
 	conn, err := grpc.Dial("localhost:50051",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithBlock(),
@@ -21,8 +23,10 @@ func main() {
 	}
 	defer conn.Close()
 
+	// create the client
 	client := proto.NewStreamingServiceClient(conn)
 
+	// initialise the stream
 	stream, err := client.StreamServerTime(ctx, &proto.StreamServerTimeRequest{
 		IntervalSeconds: 2,
 	})
@@ -30,12 +34,13 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// loop through all the responses we get back from the server
+	// log it
 	for {
-		// receive response from server chunk
 		res, err := stream.Recv()
 		if err != nil {
 			if err == io.EOF {
-				break // stream done
+				break
 			}
 			log.Fatal(err)
 		}
@@ -43,5 +48,6 @@ func main() {
 		log.Printf("received time from server: %s", res.CurrentTime.AsTime())
 	}
 
+	// once the server closes the stream, exit gracefully
 	log.Println("server stream closed")
 }

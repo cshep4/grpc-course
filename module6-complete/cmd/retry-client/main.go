@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/cshep4/grpc-course/module6/internal/config"
 	"github.com/cshep4/grpc-course/module6/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -11,30 +13,30 @@ import (
 func main() {
 	ctx := context.Background()
 
-	const grpcServiceConfig = `{
-	"methodConfig": [{
-		"name": [{"service": "config.ConfigService"}],
-		"retryPolicy": {
-		  "maxAttempts": 4,
-		  "initialBackoff": "0.1s",
-		  "maxBackoff": "1s",
-		  "backoffMultiplier": 2,
-		  "retryableStatusCodes": [
-			"INTERNAL", "UNAVAILABLE"
-		  ]
-		}
-	}]
-}`
-
-	conn, err := grpc.DialContext(ctx, "localhost:50051",
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
-		grpc.WithDefaultServiceConfig(grpcServiceConfig),
-	)
-	if err != nil {
-		log.Fatalf("failed to connect: %v", err)
+	cfg := config.Config{
+		MethodConfig: []config.MethodConfig{{
+			Name: []config.NameConfig{{
+				Service: "config.ConfigService",
+			}},
+			RetryPolicy: &config.RetryPolicy{
+				MaxAttempts:          4,
+				InitialBackoff:       "1s",
+				MaxBackoff:           "10s",
+				BackoffMultiplier:    2,
+				RetryableStatusCodes: []string{"INTERNAL", "UNAVAILABLE"},
+			},
+		}},
 	}
-	defer conn.Close()
+
+	serviceConfig, err := json.Marshal(cfg)
+	if err != nil {
+		log.Fatalf("failed to marshal config: %v", err)
+	}
+
+	conn, err := grpc.NewClient("localhost:50051",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultServiceConfig(string(serviceConfig)),
+	)
 
 	client := proto.NewConfigServiceClient(conn)
 

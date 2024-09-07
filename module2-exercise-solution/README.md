@@ -6,28 +6,6 @@ Create a gRPC todo application. A [service contract](./proto/todo.proto) has bee
 protobuf to generate the client & server stubs, then implement both server and client using the same generated protobuf
 code and make gRPC calls.
 
-A makefile has been provided with useful commands.
-
-To install protoc and required plugins:
-```bash
-$ make get-protoc-plugins
-```
-
-To compile protocol buffers:
-```bash
-$ make proto-gen
-```
-
-To run server:
-```bash
-$ make run-server
-```
-
-To run client:
-```bash
-$ make run-client
-```
-
 ## Requirements
 
 - Implement all the defined RPCs on the [TodoService contract](./proto/todo.proto).
@@ -50,3 +28,27 @@ $ make run-client
         - ListTasksResponse message contains a list of outstanding tasks
 - Server should listen on port 50051
 - Client should initialise gRPC connection, add tasks to todo list, list tasks and remove tasks and log results
+
+## Useful Commands
+
+A makefile has been provided with useful commands.
+
+To install protoc and required plugins:
+```bash
+$ make get-protoc-plugins
+```
+
+To compile protocol buffers:
+```bash
+$ make proto-gen
+```
+
+To run server:
+```bash
+$ make run-server
+```
+
+To run client:
+```bash
+$ make run-client
+```

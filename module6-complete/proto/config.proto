@@ -5,15 +5,15 @@ package config;
 option go_package = "github.com/cshep4/grpc-course/module6/proto";
 
 service ConfigService {
-  rpc GetServerName(GetServerNameRequest) returns (GetServerNameResponse);
+  rpc GetServerAddress(GetServerAddressRequest) returns (GetServerAddressResponse);
   rpc LongRunning(LongRunningRequest) returns (LongRunningResponse);
   rpc Flaky(FlakyRequest) returns (FlakyResponse);
 }
 
-message GetServerNameRequest {}
+message GetServerAddressRequest {}
 
-message GetServerNameResponse {
-  string name = 1;
+message GetServerAddressResponse {
+  string address = 1;
 }
 
 message LongRunningRequest {}

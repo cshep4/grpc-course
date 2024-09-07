@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
+	"log"
+	"net"
+	"time"
+
 	"github.com/cshep4/grpc-course/module5/internal/interceptor"
 	"github.com/cshep4/grpc-course/module5/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"log"
-	"net"
-	"time"
 )
 
 func main() {
@@ -26,7 +27,7 @@ func main() {
 				return resp, err
 			},
 			func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
-				log.Printf("Request received: %s", info.FullMethod)
+				log.Printf("Request received on server: %s", info.FullMethod)
 
 				resp, err = handler(ctx, req)
 

@@ -20,6 +20,7 @@ func main() {
 
 	const grpcServiceConfig = `{"loadBalancingPolicy":"round_robin"}`
 
+	// chris://
 	conn, err := grpc.DialContext(ctx, fmt.Sprintf("%s://", builder.Scheme()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithBlock(),
@@ -35,11 +36,12 @@ func main() {
 	for i := range 12 {
 		log.Printf("making request %d", i)
 
-		res, err := client.GetServerName(ctx, &proto.GetServerNameRequest{})
+		res, err := client.GetServerAddress(ctx, &proto.GetServerAddressRequest{})
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("response received: %s", res.GetName())
+
+		log.Printf("response received: %s", res.GetAddress())
 		time.Sleep(time.Second)
 	}
 }

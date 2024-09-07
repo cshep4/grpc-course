@@ -7,11 +7,27 @@ metadata:
   namespace: test-grpc
 spec:
   ports:
-    - name: grpc
-      port: 50051
+    - port: 50051
+      name: grpc
       targetPort: 50051
   selector:
     app: test-grpc
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: test-grpc-with-tls
+  name: test-grpc-with-tls
+  namespace: test-grpc
+spec:
+  ports:
+    - port: 50051
+      name: grpc
+      targetPort: 50051
+  selector:
+    app: test-grpc-with-tls
   type: ClusterIP
 ---
 apiVersion: v1
@@ -26,8 +42,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - name: grpc
-      port: 50051
+    - port: 50051
+      name: grpc
       targetPort: 50051
       protocol: TCP
   selector:

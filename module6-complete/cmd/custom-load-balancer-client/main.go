@@ -30,9 +30,8 @@ func main() {
 
 	const grpcServiceConfig = `{"loadBalancingPolicy":"ab_testing"}`
 
-	conn, err := grpc.DialContext(ctx, fmt.Sprintf("%s://", builder.Scheme()),
+	conn, err := grpc.NewClient(fmt.Sprintf("%s://", builder.Scheme()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
 		grpc.WithDefaultServiceConfig(grpcServiceConfig),
 	)
 	if err != nil {
@@ -40,7 +39,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	time.Sleep(time.Second)
+	time.Sleep(time.Second * 2)
 
 	client := proto.NewConfigServiceClient(conn)
 
@@ -48,14 +47,15 @@ func main() {
 
 		log.Printf("Making request for group %q", group)
 
-		res, err := client.GetServerName(
+		res, err := client.GetServerAddress(
 			metadata.AppendToOutgoingContext(ctx, "user-group", group),
-			&proto.GetServerNameRequest{},
+			&proto.GetServerAddressRequest{},
 		)
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("response received from server: %s", res.GetName())
+
+		log.Printf("response received for group %q from server: %s", group, res.GetAddress())
 
 		time.Sleep(time.Second * 2)
 	}

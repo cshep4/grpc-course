@@ -26,11 +26,11 @@ func NewService(name string) (*service, error) {
 	}, nil
 }
 
-func (s service) GetServerName(ctx context.Context, request *proto.GetServerNameRequest) (*proto.GetServerNameResponse, error) {
+func (s service) GetServerAddress(ctx context.Context, request *proto.GetServerAddressRequest) (*proto.GetServerAddressResponse, error) {
 	log.Printf("request received on server: %s", s.name)
 
-	return &proto.GetServerNameResponse{
-		Name: s.name,
+	return &proto.GetServerAddressResponse{
+		Address: s.name,
 	}, nil
 }
 

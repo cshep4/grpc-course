@@ -1,31 +1,23 @@
-# Module 03 Exercise: Create a file upload application
+# Module 04 Exercise: Add mTLS to our file upload application
 
 ## Objective
 
-Implement a basic file upload service for the provided protobuf contract, that contains two RPCs:
+Take the gRPC file upload service we built in module 3 and implement mTLS authentication.
 
-- UploadFile - A client streaming RPC, that uploads a file in chunks to the server. Once uploaded, the server responds
-  with a generated file name.
-- DownloadFile - A server streaming RPC that accepts a filename in the request and streams the file content in chunks
-  of 5KB back to the client.
-
-Once the server is created, implement the client which will call the `DownloadFile` RPC to download the
-provided [gopher.png](./gopher.png) image. A basic HTTP server has been provided to test the client inside a browser,
-you just need to implement the `downloadHandler` in the [main.go](./cmd/client/main.go) file to download the file and
-return the content to the user.
+You should generate the client and server certificates using the `gen-certs` make command provided. Once these are
+generated, modify both the client and server to load these on startup, and ensure the certificates are verified when
+making a connection.
 
 Once the client application is running, you should be able to test it in a browser by going to: http://localhost:8080
 
+If the image of a gopher is returned successfully then mTLS authentication is working as expected and communication is
+secure.
+
 ## Requirements:
 
-- Both RPCs should be implemented on the server.
-- Server should listen on port 50051.
-- Server should return `InvalidArgument` in the DownloadFile RPC if the file name is empty.
-- Server should return `NotFound` in the DownloadFile RPC if the file is not found.
-- Server should download the file in chunks of 5KB.
-- Implement `downloadHandler` function in client to download the [gopher.png](./gopher.png) file in chunks using your
-  gRPC service.
-- Client HTTP server should buffer the file in memory until all chunks are received, then return the file response.
+- Generate TLS certifcates for both client & server using the `gen-certs` make command.
+- Certificates should be loaded and passed as credentials on server startup.
+- Certificates should be loaded and used in TLS config when initialising gRPC connection on the client.
 
 ## Useful Commands
 
@@ -53,4 +45,28 @@ To run client application:
 
 ```bash
 $ make run-client
+```
+
+To generate all TLS certificates:
+
+```bash
+$ make gen-certs
+```
+
+To generate only the root CA certificates:
+
+```bash
+$ make gen-ca-certs
+```
+
+To generate only the server certificates:
+
+```bash
+$ make gen-server-certs
+```
+
+To generate only the client certificates:
+
+```bash
+$ make gen-client-certs
 ```

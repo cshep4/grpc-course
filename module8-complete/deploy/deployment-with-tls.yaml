@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: test-grpc-with-tls
+  name: test-grpc-with-tls
+  namespace: test-grpc
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: test-grpc-with-tls
+  template:
+    metadata:
+      labels:
+        app: test-grpc-with-tls
+    spec:
+      containers:
+        - name: test-grpc-with-tls
+          image: ghcr.io/cshep4/grpc-course/hello-server:v1.0.2
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TLS_CERT_PATH
+              value: "certs/tls.crt"
+            - name: TLS_KEY_PATH
+              value: "certs/tls.key"
+          ports:
+            - containerPort: 50051
+              name: grpc
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+            - mountPath: /certs
+              name: certs
+      imagePullSecrets:
+        - name: github-packages-secret
+      volumes:
+        - name: certs
+          secret:
+            defaultMode: 256
+            secretName: test-grpc-cert-secret

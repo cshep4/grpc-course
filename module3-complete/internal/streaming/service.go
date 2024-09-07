@@ -1,76 +1,93 @@
 package streaming
 
 import (
-	"github.com/cshep4/grpc-course/module3/proto"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"io"
 	"log"
 	"time"
+
+	"github.com/cshep4/grpc-course/module3/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Service struct {
 	proto.UnimplementedStreamingServiceServer
 }
 
-func (s Service) StreamServerTime(request *proto.StreamServerTimeRequest, server proto.StreamingService_StreamServerTimeServer) error {
-	interval := time.Duration(request.IntervalSeconds) * time.Second
+func (s Service) StreamServerTime(request *proto.StreamServerTimeRequest, stream proto.StreamingService_StreamServerTimeServer) error {
+	if request.GetIntervalSeconds() == 0 {
+		return status.Error(codes.InvalidArgument, "interval must be set")
+	}
+
+	interval := time.Duration(request.GetIntervalSeconds()) * time.Second
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
 	for {
 		select {
-		case <-server.Context().Done():
+		case <-stream.Context().Done():
 			return nil
 		case <-ticker.C:
 			currentTime := time.Now()
-			if err := server.Send(&proto.StreamServerTimeResponse{
+
+			resp := &proto.StreamServerTimeResponse{
 				CurrentTime: timestamppb.New(currentTime),
-			}); err != nil {
+			}
+
+			if err := stream.Send(resp); err != nil {
 				return err
 			}
 		}
 	}
 }
 
-func (s Service) LogStream(server proto.StreamingService_LogStreamServer) error {
+func (s Service) LogStream(stream proto.StreamingService_LogStreamServer) error {
+	// initialise a count
 	count := 0
-	for {
-		logEntry, err := server.Recv()
-		if err == io.EOF {
-			// When client has finished sending the logs, send a summary back
-			return server.SendAndClose(&proto.LogStreamResponse{
-				EntriesLogged: int32(count),
-			})
-		}
-		if err != nil {
-			return err
-		}
-		// Process the log entry, e.g., print it or store it
-		log.Printf("Received log [%s]: %s - %s\n", logEntry.Timestamp.AsTime(), logEntry.Level, logEntry.Message)
-		count++
-	}
-}
 
-func (s Service) Echo(server proto.StreamingService_EchoServer) error {
+	// loop through all the received messages
 	for {
-		// receive client message
-		req, err := server.Recv()
+		// receive our message
+		logEntry, err := stream.Recv()
 		if err != nil {
+			// check if the stream is closed
 			if err == io.EOF {
-				return nil // client stream done
+				return stream.SendAndClose(&proto.LogStreamResponse{
+					EntriesLogged: int32(count),
+				})
 			}
 			return err
 		}
 
-		log.Printf("message received: %s", req.Message)
+		// log message
+		log.Printf("Received log [%s]: %s - %s", logEntry.GetTimestamp().AsTime(), logEntry.GetLevel().String(), logEntry.GetMessage())
+		// increment count
+		count++
+	}
+}
 
-		// build response
+func (s Service) Echo(stream proto.StreamingService_EchoServer) error {
+	for {
+		// loop through the messages received from the client
+		req, err := stream.Recv()
+		if err != nil {
+			// check if the stream is closed
+			if err == io.EOF {
+				// close the server side stream
+				return nil
+			}
+
+			return err
+		}
+
+		log.Printf("message received: %s", req.GetMessage())
+
+		// build our response and send back from server
 		res := &proto.EchoResponse{
 			Message: req.GetMessage(),
 		}
-
-		// send response to client
-		if err := server.Send(res); err != nil {
+		if err := stream.Send(res); err != nil {
 			return err
 		}
 	}

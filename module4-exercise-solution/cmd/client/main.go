@@ -3,15 +3,17 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"github.com/cshep4/grpc-course/module4-exercise/proto"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/status"
 	"io"
 	"log"
 	"net/http"
 	"os"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/status"
+
+	"github.com/cshep4/grpc-course/module4-exercise/proto"
 )
 
 func main() {

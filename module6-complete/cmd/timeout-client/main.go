@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/cshep4/grpc-course/module6/internal/config"
 	"github.com/cshep4/grpc-course/module6/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -11,28 +13,30 @@ import (
 func main() {
 	ctx := context.Background()
 
-	const grpcServiceConfig = `{
-	"methodConfig": [{
-		"name": [{"service": "config.ConfigService", "method": "LongRunning"}],
-		"timeout": "1s"
-	}]
-}`
-	//config := config2.Config{
-	//	MethodConfig: []config2.MethodConfig{{
-	//		Name: []config2.NameConfig{{
-	//			Service: "config.ConfigService",
-	//			Method:  "LongRunning",
-	//		}},
-	//		RetryPolicy: nil,
-	//		Timeout:     "10s",
-	//	}},
-	//}
-	//cs, _ := json.Marshal(config)
+	//	const grpcServiceConfig = `{
+	//	"methodConfig": [{
+	//		"name": [{"service": "config.ConfigService", "method": "LongRunning"}],
+	//		"timeout": "1s"
+	//	}]
+	//}`
+	cfg := config.Config{
+		MethodConfig: []config.MethodConfig{{
+			Name: []config.NameConfig{{
+				Service: "config.ConfigService",
+				Method:  "LongRunning",
+			}},
+			Timeout: "1s",
+		}},
+	}
 
-	conn, err := grpc.DialContext(ctx, "localhost:50051",
+	serviceConfig, err := json.Marshal(cfg)
+	if err != nil {
+		log.Fatalf("failed to marshal config: %v", err)
+	}
+
+	conn, err := grpc.NewClient("localhost:50051",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
-		grpc.WithDefaultServiceConfig(grpcServiceConfig),
+		grpc.WithDefaultServiceConfig(string(serviceConfig)),
 	)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)

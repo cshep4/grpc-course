@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"log/slog"
 	"os"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
 	"github.com/cshep4/grpc-course/module8/proto"

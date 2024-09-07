@@ -7,6 +7,15 @@ create-gke-cluster:
 	export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 	gcloud container clusters get-credentials $CLUSTER
 
+.PHONY: scale-up-gke
+scale-up-gke:
+	gcloud container clusters resize $CLUSTER --num-nodes=2
+	gcloud container clusters get-credentials $CLUSTER
+
+.PHONY: scale-down-gke
+scale-down-gke:
+	gcloud container clusters resize $CLUSTER --num-nodes=0
+
 .PHONY: create-gh-packages-secret
 create-gh-packages-secret:
 	kubectl create secret docker-registry github-packages-secret \

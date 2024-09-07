@@ -20,10 +20,6 @@ run-server:
 run-client:
 	go run cmd/client/main.go
 
-.PHONY: run-download-client
-run-download-client:
-	go run cmd/download-client/main.go
-
 .PHONY: gen-certs
 gen-certs: gen-ca-certs gen-server-certs gen-client-certs
 

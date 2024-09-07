@@ -3,18 +3,20 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
+	"log"
+	"time"
+
 	"github.com/cshep4/grpc-course/module3/proto"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"io"
-	"log"
-	"time"
 )
 
 func main() {
 	ctx := context.Background()
 
+	// initialise our grpc connection
 	conn, err := grpc.Dial("localhost:50051",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithBlock(),
@@ -24,8 +26,10 @@ func main() {
 	}
 	defer conn.Close()
 
+	// create a client
 	client := proto.NewStreamingServiceClient(conn)
 
+	// initialise our stream
 	stream, err := client.Echo(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -33,38 +37,42 @@ func main() {
 
 	eg, ctx := errgroup.WithContext(ctx)
 
-	// receive server responses in separate go routine
+	// create a separate go routine to listen to the server responses
 	eg.Go(func() error {
+		// loop for each message from server
 		for {
-			// receive message from server
 			res, err := stream.Recv()
-			if err == io.EOF {
-				break // read done.
-			}
 			if err != nil {
+				if err == io.EOF {
+					break
+				}
 				return err
 			}
 
-			log.Printf("response received: %s", res.Message)
+			// log the message
+			log.Printf("message received from server: %s", res.GetMessage())
 		}
+
 		return nil
 	})
 
-	for i := 0; i < 5; i++ {
-		// send message to server
-		req := &proto.EchoRequest{Message: fmt.Sprintf("Hello %d", i)}
+	// send some message from the client
+	for i := range 5 {
+		req := &proto.EchoRequest{
+			Message: fmt.Sprintf("Hello %d", i),
+		}
 		if err := stream.Send(req); err != nil {
 			log.Fatal(err)
 		}
-		time.Sleep(time.Second)
+		time.Sleep(time.Second * 2)
 	}
 
-	// close client stream
+	// close the client stream
 	if err := stream.CloseSend(); err != nil {
 		log.Fatal(err)
 	}
 
-	// wait for server response go routine to finish
+	// wait for the server go routine to finish
 	if err := eg.Wait(); err != nil {
 		log.Fatal(err)
 	}

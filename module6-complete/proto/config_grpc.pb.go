@@ -19,16 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ConfigService_GetServerName_FullMethodName = "/config.ConfigService/GetServerName"
-	ConfigService_LongRunning_FullMethodName   = "/config.ConfigService/LongRunning"
-	ConfigService_Flaky_FullMethodName         = "/config.ConfigService/Flaky"
+	ConfigService_GetServerAddress_FullMethodName = "/config.ConfigService/GetServerAddress"
+	ConfigService_LongRunning_FullMethodName      = "/config.ConfigService/LongRunning"
+	ConfigService_Flaky_FullMethodName            = "/config.ConfigService/Flaky"
 )
 
 // ConfigServiceClient is the client API for ConfigService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ConfigServiceClient interface {
-	GetServerName(ctx context.Context, in *GetServerNameRequest, opts ...grpc.CallOption) (*GetServerNameResponse, error)
+	GetServerAddress(ctx context.Context, in *GetServerAddressRequest, opts ...grpc.CallOption) (*GetServerAddressResponse, error)
 	LongRunning(ctx context.Context, in *LongRunningRequest, opts ...grpc.CallOption) (*LongRunningResponse, error)
 	Flaky(ctx context.Context, in *FlakyRequest, opts ...grpc.CallOption) (*FlakyResponse, error)
 }
@@ -41,9 +41,9 @@ func NewConfigServiceClient(cc grpc.ClientConnInterface) ConfigServiceClient {
 	return &configServiceClient{cc}
 }
 
-func (c *configServiceClient) GetServerName(ctx context.Context, in *GetServerNameRequest, opts ...grpc.CallOption) (*GetServerNameResponse, error) {
-	out := new(GetServerNameResponse)
-	err := c.cc.Invoke(ctx, ConfigService_GetServerName_FullMethodName, in, out, opts...)
+func (c *configServiceClient) GetServerAddress(ctx context.Context, in *GetServerAddressRequest, opts ...grpc.CallOption) (*GetServerAddressResponse, error) {
+	out := new(GetServerAddressResponse)
+	err := c.cc.Invoke(ctx, ConfigService_GetServerAddress_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (c *configServiceClient) Flaky(ctx context.Context, in *FlakyRequest, opts 
 // All implementations must embed UnimplementedConfigServiceServer
 // for forward compatibility
 type ConfigServiceServer interface {
-	GetServerName(context.Context, *GetServerNameRequest) (*GetServerNameResponse, error)
+	GetServerAddress(context.Context, *GetServerAddressRequest) (*GetServerAddressResponse, error)
 	LongRunning(context.Context, *LongRunningRequest) (*LongRunningResponse, error)
 	Flaky(context.Context, *FlakyRequest) (*FlakyResponse, error)
 	mustEmbedUnimplementedConfigServiceServer()
@@ -82,8 +82,8 @@ type ConfigServiceServer interface {
 type UnimplementedConfigServiceServer struct {
 }
 
-func (UnimplementedConfigServiceServer) GetServerName(context.Context, *GetServerNameRequest) (*GetServerNameResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetServerName not implemented")
+func (UnimplementedConfigServiceServer) GetServerAddress(context.Context, *GetServerAddressRequest) (*GetServerAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetServerAddress not implemented")
 }
 func (UnimplementedConfigServiceServer) LongRunning(context.Context, *LongRunningRequest) (*LongRunningResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LongRunning not implemented")
@@ -104,20 +104,20 @@ func RegisterConfigServiceServer(s grpc.ServiceRegistrar, srv ConfigServiceServe
 	s.RegisterService(&ConfigService_ServiceDesc, srv)
 }
 
-func _ConfigService_GetServerName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetServerNameRequest)
+func _ConfigService_GetServerAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetServerAddressRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ConfigServiceServer).GetServerName(ctx, in)
+		return srv.(ConfigServiceServer).GetServerAddress(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ConfigService_GetServerName_FullMethodName,
+		FullMethod: ConfigService_GetServerAddress_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConfigServiceServer).GetServerName(ctx, req.(*GetServerNameRequest))
+		return srv.(ConfigServiceServer).GetServerAddress(ctx, req.(*GetServerAddressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -166,8 +166,8 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ConfigServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetServerName",
-			Handler:    _ConfigService_GetServerName_Handler,
+			MethodName: "GetServerAddress",
+			Handler:    _ConfigService_GetServerAddress_Handler,
 		},
 		{
 			MethodName: "LongRunning",

@@ -3,15 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/cshep4/grpc-course/module3/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"log"
-	"time"
 )
 
 func main() {
+	// initialise a grpc connection
 	ctx := context.Background()
 
 	conn, err := grpc.Dial("localhost:50051",
@@ -23,20 +25,21 @@ func main() {
 	}
 	defer conn.Close()
 
+	// create our client
 	client := proto.NewStreamingServiceClient(conn)
 
-	// initialise stream
+	// initialise the client stream
 	stream, err := client.LogStream(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for i := 0; i < 5; i++ {
-		// send message to server
+	// send some log messages
+	for i := range 5 {
 		req := &proto.LogStreamRequest{
-			Timestamp: timestamppb.Now(),
+			Timestamp: timestamppb.New(time.Now()),
 			Level:     proto.LogLevel_LOG_LEVEL_INFO,
-			Message:   fmt.Sprintf("Hello %d", i),
+			Message:   fmt.Sprintf("Hello log: %s", i),
 		}
 		if err := stream.Send(req); err != nil {
 			log.Fatal(err)
@@ -45,11 +48,12 @@ func main() {
 		time.Sleep(time.Second)
 	}
 
-	// receive response from server
+	// close the stream
 	res, err := stream.CloseAndRecv()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Printf("number of logs sent: %d", res.EntriesLogged)
+	// log the response from server
+	log.Printf("number of sent: %d", res.GetEntriesLogged())
 }

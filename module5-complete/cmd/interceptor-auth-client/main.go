@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
+	"log"
+	"os"
+
 	"github.com/cshep4/grpc-course/module5/internal/auth"
 	"github.com/cshep4/grpc-course/module5/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
-	"log"
-	"os"
 )
 
 func main() {
@@ -29,9 +30,8 @@ func main() {
 		log.Fatalf("failed to issue token: %v", err)
 	}
 
-	conn, err := grpc.DialContext(ctx, "localhost:50051",
+	conn, err := grpc.NewClient("localhost:50051",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
 	)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
