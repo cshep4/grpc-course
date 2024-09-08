@@ -4,7 +4,7 @@ gRPC is the modern, high performance way to communicate across services. It is u
 
 Go is the perfect tool for gRPC, and by the end of this extensive course, you will see why.
 
-This comprehensive course is designed for engineers to become proficient at writing production-ready microservices in Go using gRPC. Through a series of structured modules, students will learn to build scalable, robust and type-safe gRPC clients/services that are professional-grade. The course starts with the basics of Protocol Buffers and gRPC, gradually moving to advanced features, such as streaming, authentication/authorization and deployment. This code pairs with the [ByteSizeGo video course](https://www.bytesizego.com/view/courses/grpc-with-go).
+This comprehensive course is designed for engineers to become proficient at writing production-ready microservices in Go using gRPC. Through a series of structured modules, students will learn to build scalable, robust and type-safe gRPC clients/services that are professional-grade. The course starts with the basics of Protocol Buffers and gRPC, gradually moving to advanced features, such as streaming, authentication/authorization and deployment. This code pairs with the [ByteSizeGo video course](https://www.bytesizego.com/grpc-with-go).
 
 ## Course Outline
 
